@@ -1,4 +1,4 @@
-﻿import * as THREE from "three";
+import * as THREE from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
@@ -11,6 +11,8 @@ const qualityModeEl = document.getElementById("quality-mode");
 const particleSizeEl = document.getElementById("particle-size");
 const reduceMotionEl = document.getElementById("reduce-motion");
 const hudEl = document.getElementById("hud");
+const controlPanelEl = document.getElementById("control-panel");
+const panelToggleEl = document.getElementById("panel-toggle");
 const canvasCtx = canvasElement.getContext("2d");
 
 const isMobile = window.innerWidth < 900;
@@ -86,6 +88,7 @@ let avgFrameMs = 16.6;
 let frameCounter = 0;
 let resizedVideo = false;
 let lastHudUpdate = 0;
+const mobilePanelQuery = window.matchMedia("(max-width: 720px)");
 
 function setStatus(text) {
   if (statusTextEl) statusTextEl.textContent = text;
@@ -637,6 +640,40 @@ function setupControls() {
   }
 }
 
+function setMobilePanelOpen(isOpen) {
+  if (!controlPanelEl || !panelToggleEl) return;
+  controlPanelEl.classList.toggle("is-open", isOpen);
+  panelToggleEl.setAttribute("aria-expanded", String(isOpen));
+}
+
+function syncMobilePanelState() {
+  if (!mobilePanelQuery.matches) {
+    setMobilePanelOpen(true);
+    return;
+  }
+  setMobilePanelOpen(false);
+}
+
+function setupMobilePanelToggle() {
+  if (!controlPanelEl || !panelToggleEl) return;
+
+  panelToggleEl.addEventListener("click", (event) => {
+    event.stopPropagation();
+    const isOpen = panelToggleEl.getAttribute("aria-expanded") === "true";
+    setMobilePanelOpen(!isOpen);
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!mobilePanelQuery.matches) return;
+    if (!(event.target instanceof Node)) return;
+    if (panelToggleEl.contains(event.target) || controlPanelEl.contains(event.target)) return;
+    setMobilePanelOpen(false);
+  });
+
+  mobilePanelQuery.addEventListener("change", syncMobilePanelState);
+  syncMobilePanelState();
+}
+
 async function setupHands() {
   if (!window.Hands || !window.Camera || !window.drawConnectors) {
     throw new Error("MediaPipe libraries failed to load. Check internet/CDN availability.");
@@ -897,6 +934,7 @@ window.addEventListener("resize", onResize);
 async function bootstrap() {
   try {
     setStatus("Initializing camera and hand tracking...");
+    setupMobilePanelToggle();
     setupControls();
     applyQualityMode(qualityMode);
     setTechnique("neutral");
