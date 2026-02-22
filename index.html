@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JJK: Cursed Technique</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="grain"></div>
+
+  <div id="ui">
+    <h1>呪術廻戦</h1>
+    <div id="technique-name">CURSED ENERGY</div>
+    <div id="status-text">Loading…</div>
+  </div>
+
+  <aside id="control-panel" aria-label="App controls">
+    <div class="panel-title">Control Panel</div>
+    <label class="control-row" for="quality-mode">
+      <span>Quality</span>
+      <select id="quality-mode">
+        <option value="auto" selected>Auto</option>
+        <option value="low">Low</option>
+        <option value="high">High</option>
+      </select>
+    </label>
+    <label class="control-row" for="particle-size">
+      <span>Particle Size</span>
+      <input id="particle-size" type="range" min="0.18" max="0.7" step="0.01" value="0.32" />
+    </label>
+    <label class="control-row checkbox-row" for="reduce-motion">
+      <span>Reduce Motion</span>
+      <input id="reduce-motion" type="checkbox" />
+    </label>
+    <div id="gesture-guide">
+      <div>Pinch: Hollow Purple</div>
+      <div>Index + Pinky Up: Coffin of the Iron Mountain</div>
+      <div>Two Closed Fists: Mahoraga</div>
+      <div>One Closed Fist: Blood Manipulation</div>
+      <div>Open Hand: Malevolent Shrine</div>
+      <div>Index + Middle: Infinite Void</div>
+      <div>Index Only: Reversal Red</div>
+    </div>
+  </aside>
+
+  <div id="hud" aria-live="polite">FPS: -- | Particles: --</div>
+
+  <div id="video-container">
+    <video class="input_video" autoplay playsinline muted></video>
+    <canvas id="output_canvas"></canvas>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
+
+
