@@ -88,7 +88,6 @@ let avgFrameMs = 16.6;
 let frameCounter = 0;
 let resizedVideo = false;
 let lastHudUpdate = 0;
-const mobilePanelQuery = window.matchMedia("(max-width: 720px)");
 
 function setStatus(text) {
   if (statusTextEl) statusTextEl.textContent = text;
@@ -640,18 +639,10 @@ function setupControls() {
   }
 }
 
-function setMobilePanelOpen(isOpen) {
+function setPanelOpen(isOpen) {
   if (!controlPanelEl || !panelToggleEl) return;
   controlPanelEl.classList.toggle("is-open", isOpen);
   panelToggleEl.setAttribute("aria-expanded", String(isOpen));
-}
-
-function syncMobilePanelState() {
-  if (!mobilePanelQuery.matches) {
-    setMobilePanelOpen(true);
-    return;
-  }
-  setMobilePanelOpen(false);
 }
 
 function setupMobilePanelToggle() {
@@ -660,18 +651,16 @@ function setupMobilePanelToggle() {
   panelToggleEl.addEventListener("click", (event) => {
     event.stopPropagation();
     const isOpen = panelToggleEl.getAttribute("aria-expanded") === "true";
-    setMobilePanelOpen(!isOpen);
+    setPanelOpen(!isOpen);
   });
 
   document.addEventListener("click", (event) => {
-    if (!mobilePanelQuery.matches) return;
     if (!(event.target instanceof Node)) return;
     if (panelToggleEl.contains(event.target) || controlPanelEl.contains(event.target)) return;
-    setMobilePanelOpen(false);
+    setPanelOpen(false);
   });
 
-  mobilePanelQuery.addEventListener("change", syncMobilePanelState);
-  syncMobilePanelState();
+  setPanelOpen(false);
 }
 
 async function setupHands() {
