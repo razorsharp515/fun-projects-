@@ -1,23 +1,41 @@
-﻿## Description
-SAT0RU is a Jujutsu Kaisen-inspired cursed technique visualizer using MediaPipe Hands + Three.js.
+## Description
+This project is a browser-based Jujutsu Kaisen inspired hand-sign visualizer.
 
-## Improvements in this version
-- Split codebase into `index.html`, `styles.css`, and `app.js`
-- Fixed text encoding (UTF-8) for Japanese title
-- Added startup/error handling for camera and CDN failures
-- Reduced heavy per-frame work for better FPS
-- Added adaptive particle quality (auto scales based on frame time)
-- Improved gesture stability with frame-based smoothing
-- Resizes tracking canvas only when video dimensions actually change
-- Added control panel: quality mode (`Auto/Low/High`), particle size slider, and reduce-motion toggle
-- Added live HUD with FPS + particle count + active quality mode
-- Added richer background treatment and mobile-safe control panel placement
+It uses:
+- `MediaPipe Hands` for webcam hand tracking
+- `Three.js` for real-time particle-based cursed technique effects
+- Post-processing bloom, on-screen status/HUD, and a control panel for runtime tuning
 
-## Techniques
-- `Pinch` (thumb + index): Hollow Purple
-- `Open hand`: Malevolent Shrine
-- `Index + middle up`: Infinite Void
-- `Index only`: Reversal Red
+## Features
+- Real-time hand landmark detection from webcam input
+- 8 technique states with animated particle systems
+- Gesture smoothing to reduce flicker (technique changes after stable detection)
+- Adaptive quality mode that auto-adjusts particle count based on frame time
+- Manual quality override (`Auto`, `Low`, `High`)
+- Particle size slider
+- Reduce motion toggle
+- Startup and dependency failure handling with clear status messages
+
+## Gesture Mapping
+- `Pinch (thumb + index)` -> `Secret Technique: Hollow Purple`
+- `Index + Pinky Up` -> `Domain Expansion: Coffin of the Iron Mountain`
+- `Two Closed Fists` -> `Domain Expansion: Mahoraga`
+- `One Closed Fist` -> `Domain Expansion: Blood Manipulation`
+- `Open Hand (index + middle + ring + pinky up)` -> `Domain Expansion: Malevolent Shrine`
+- `Index + Middle Up` -> `Domain Expansion: Infinite Void`
+- `Index Only` -> `Reverse Cursed Technique: Red`
+- `No valid sign` -> `Neutral State`
+
+## Controls
+- `Quality`: `Auto` / `Low` / `High`
+- `Particle Size`: range slider
+- `Reduce Motion`: reduces screen shake and effect intensity
+- `HUD`: shows FPS, active particle count, and quality mode
+
+## Project Files
+- `index.html` - app shell, CDN script loading, UI, control panel
+- `styles.css` - styling/layout
+- `app.js` - hand-sign classification, particle generation, animation, and runtime controls
 
 ## Run
 Use a local server (do not open with `file://`).
@@ -25,13 +43,21 @@ Use a local server (do not open with `file://`).
 ### Option 1: VS Code Live Server
 Open `index.html` with Live Server.
 
-### Option 2: Python server
+### Option 2: Python HTTP server
 ```bash
 python -m http.server 5500
 ```
-Open: `http://127.0.0.1:5500/`
+Then open `http://127.0.0.1:5500/`
+
+## Requirements
+- Modern browser with WebGL support
+- Webcam access permission
+- Internet access for CDN dependencies:
+  - `three` (module import)
+  - `@mediapipe/camera_utils`
+  - `@mediapipe/hands`
+  - `@mediapipe/drawing_utils`
 
 ## Notes
-- Webcam permission is required.
-- If CDN scripts are blocked, startup will fail with an explicit message.
-- For low-end devices, quality will auto-reduce particle count.
+- On slower devices, `Auto` mode lowers particle count to keep performance stable.
+- If CDN scripts fail to load, the app reports startup failure in the UI.
